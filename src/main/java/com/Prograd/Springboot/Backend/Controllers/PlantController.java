@@ -8,10 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("")
 public class PlantController {
     @Autowired
     private JwtTokenHelper jwtTokenHelper;
@@ -22,7 +23,7 @@ public class PlantController {
         this.PlantService = PlantService;
     }
     @PostMapping("admin/addPlant")
-    public ResponseEntity<Plant> savePlant(@RequestBody Plant Plant){
+    public ResponseEntity<Plant> savePlant(@Valid @RequestBody Plant Plant){
         return new ResponseEntity<Plant>(PlantService.savePlant(Plant), HttpStatus.CREATED);
     }
     @GetMapping("plants")
@@ -34,7 +35,7 @@ public class PlantController {
         return new ResponseEntity<Plant>(PlantService.getPlantById(id), HttpStatus.OK);
     }
     @PutMapping("admin/plant/{id}")
-    public ResponseEntity<Plant> updatePlant(@PathVariable("id") int id,@RequestBody Plant Plant) throws PlantNotFound {
+    public ResponseEntity<Plant> updatePlant(@PathVariable("id") int id,@Valid @RequestBody Plant Plant) throws PlantNotFound {
         return new ResponseEntity<Plant>(PlantService.updatePlant(Plant,id), HttpStatus.OK);
     }
     @DeleteMapping("admin/plant/{id}")

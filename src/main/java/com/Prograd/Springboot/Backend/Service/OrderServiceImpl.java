@@ -58,7 +58,15 @@ public class OrderServiceImpl implements OrderService{
 
         if(usernameFromDB.equals(username)) {
             if (plantRepository.existsById(plant_id)) {
+
                 Order.setCustomer_id(customer_id);
+
+                int quantity = Order.getQuantity();
+                float per_cost = plantRepository.findCostByPlantId(plant_id);
+                float total_cost = quantity*per_cost;
+
+                Order.setTotal_cost(total_cost);
+
                 return OrderRepository.save(Order);
             } else {
                 throw new PlantNotFound("Plant Not Found");
@@ -69,9 +77,49 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
+    public Order getOneOrderByCustomerId(int customer_id,int id) throws OrderNotFound, CustomerNotFound {
+        Customer customer = customerRepository.findById(customer_id).orElseThrow(()->new CustomerNotFound("Customer not exist"));
+
+        String usernameFromDB = customer.getUsername();
+
+        String jwt = jwtAuthenticationFilter.parseJwt(request);
+        String username = jwtTokenHelper.getUserNameFromJwtToken(jwt);
+
+        if(usernameFromDB.equals(username)) {
+            Order Order = OrderRepository.findById(id).orElseThrow(() -> new OrderNotFound("Order not exist"));
+            return Order;
+        }
+        else{
+            throw new CustomerNotFound("You don't have access for this user");
+        }
+    }
+
+    @Override
     public Order getOrderById(int id) throws OrderNotFound {
         Order Order = OrderRepository.findById(id).orElseThrow(()->new OrderNotFound("Order not exist"));
         return Order;
+    }
+
+    @Override
+    public Order updateOrder(Order order, int id) throws OrderNotFound, PlantNotFound {
+        Order existingOrder = OrderRepository.findById(id).orElseThrow(()->new OrderNotFound(("Order not exist")));
+
+        int plant_id = order.getPlant_id();
+
+        if (plantRepository.existsById(plant_id)) {
+            int quantity = order.getQuantity();
+
+            float per_cost = plantRepository.findCostByPlantId(plant_id);
+            float total_cost = quantity*per_cost;
+
+            existingOrder.setTotal_cost(total_cost);
+            existingOrder.setQuantity(order.getQuantity());
+            existingOrder.setPlant_id(order.getPlant_id());
+
+            return OrderRepository.save(existingOrder);
+        } else {
+            throw new PlantNotFound("Plant Not Found");
+        }
     }
 
     @Override

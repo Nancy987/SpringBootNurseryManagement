@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("")
 public class CustomerController {
     @Autowired
     AuthenticationManager authenticationManager;
@@ -33,7 +32,8 @@ public class CustomerController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Customer> saveCustomer(@RequestBody Customer Customer){
+    public ResponseEntity<Customer> saveCustomer(@Valid @RequestBody Customer Customer) throws Exception {
+
         return new ResponseEntity<Customer>(CustomerService.saveCustomer(Customer), HttpStatus.CREATED);
     }
 
@@ -53,12 +53,12 @@ public class CustomerController {
     }
 
     @PutMapping("customer/{id}")
-    public ResponseEntity<Customer> updateCustomer(@PathVariable("id") int id,@RequestBody Customer Customer) throws CustomerNotFound {
+    public ResponseEntity<Customer> updateCustomer(@PathVariable("id") int id,@Valid @RequestBody Customer Customer) throws CustomerNotFound {
         return new ResponseEntity<Customer>(CustomerService.updateCustomer(Customer,id), HttpStatus.OK);
     }
 
     @PutMapping("admin/customer/{id}")
-    public ResponseEntity<Customer> adminUpdateCustomer(@PathVariable("id") int id,@RequestBody Customer Customer) throws CustomerNotFound {
+    public ResponseEntity<Customer> adminUpdateCustomer(@PathVariable("id") int id,@Valid @RequestBody Customer Customer) throws CustomerNotFound {
         return new ResponseEntity<Customer>(CustomerService.adminUpdateCustomer(Customer,id), HttpStatus.OK);
     }
     @DeleteMapping("admin/customer/{id}")

@@ -2,6 +2,7 @@ package com.Prograd.Springboot.Backend.Modals;
 
 import lombok.Data;
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -17,11 +18,15 @@ public class Order {
     @Column(nullable = false)
     private int customer_id;
     @Column(nullable = false)
+    @NotEmpty
     private int plant_id;
     @Column(nullable = false)
     private String order_date;
     @Column(nullable = false)
     private String order_time;
+    @Column(nullable = false)
+    @NotEmpty
+    private int quantity;
     @Column(nullable = false)
     private float total_cost;
 

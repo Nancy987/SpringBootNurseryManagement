@@ -10,10 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("")
 public class OrderController {
     @Autowired
     private JwtTokenHelper jwtTokenHelper;
@@ -25,7 +26,7 @@ public class OrderController {
     }
 
     @PostMapping("customer/{id}/order/create")
-    public ResponseEntity<Order> saveOrder(@PathVariable("id") int id,@RequestBody Order Order) throws CustomerNotFound, PlantNotFound {
+    public ResponseEntity<Order> saveOrder(@PathVariable("id") int id,@Valid @RequestBody Order Order) throws CustomerNotFound, PlantNotFound {
         return new ResponseEntity<Order>(OrderService.saveOrder(id,Order), HttpStatus.CREATED);
     }
 
@@ -37,10 +38,21 @@ public class OrderController {
     public ResponseEntity<Order> getOrderById(@PathVariable("id") int id) throws OrderNotFound {
         return new ResponseEntity<Order>(OrderService.getOrderById(id), HttpStatus.OK);
     }
+
+    @PutMapping("admin/order/{id}")
+    public ResponseEntity<Order> updateOrder(@PathVariable("id") int id,@Valid @RequestBody Order order) throws OrderNotFound, PlantNotFound {
+        return new ResponseEntity<Order>(OrderService.updateOrder(order,id), HttpStatus.OK);
+    }
+
     @DeleteMapping("admin/order/{id}")
     public ResponseEntity<String> deleteOrder(@PathVariable("id") int id) throws OrderNotFound {
         OrderService.deleteOrder(id);
         return new ResponseEntity<String>("Order is deleted successfully.",HttpStatus.OK);
+    }
+
+    @GetMapping("customer/{customerId}/order/{id}")
+    public ResponseEntity<Order> getOneOrderByCustomerId(@PathVariable("customerId") int customer_id, @PathVariable("id") int id) throws OrderNotFound, CustomerNotFound {
+        return new ResponseEntity<Order>(OrderService.getOneOrderByCustomerId(customer_id,id), HttpStatus.OK);
     }
 
     @GetMapping("customer/{id}/orders")
