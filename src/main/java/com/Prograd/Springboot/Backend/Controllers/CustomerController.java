@@ -68,7 +68,7 @@ public class CustomerController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody Customer Customer) {
+    public ResponseEntity<?> authenticateUser(@RequestBody Customer Customer) {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(Customer.getUsername(), Customer.getPassword()));

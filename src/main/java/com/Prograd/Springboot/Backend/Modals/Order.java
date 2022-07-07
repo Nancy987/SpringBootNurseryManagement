@@ -1,5 +1,6 @@
 package com.Prograd.Springboot.Backend.Modals;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -18,17 +19,24 @@ public class Order {
     @Column(nullable = false)
     private int customer_id;
     @Column(nullable = false)
-    @NotEmpty
     private int plant_id;
     @Column(nullable = false)
     private String order_date;
     @Column(nullable = false)
     private String order_time;
+
     @Column(nullable = false)
-    @NotEmpty
     private int quantity;
     @Column(nullable = false)
     private float total_cost;
+
+    @OneToOne
+    @JoinColumn(name = "o_customer_id")
+    private Customer o_customer_id;
+
+    @OneToOne
+    @JoinColumn(name = "o_plant_id")
+    private Plant o_plant_id;
 
     public Order() {
         Date date = new Date();

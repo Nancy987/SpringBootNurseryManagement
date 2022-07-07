@@ -2,6 +2,7 @@ package com.Prograd.Springboot.Backend.Service;
 
 import com.Prograd.Springboot.Backend.Modals.Customer;
 import com.Prograd.Springboot.Backend.Modals.Order;
+import com.Prograd.Springboot.Backend.Modals.Plant;
 import com.Prograd.Springboot.Backend.Repository.CustomerRepository;
 import com.Prograd.Springboot.Backend.Repository.OrderRepository;
 import com.Prograd.Springboot.Backend.Repository.PlantRepository;
@@ -66,6 +67,9 @@ public class OrderServiceImpl implements OrderService{
                 float total_cost = quantity*per_cost;
 
                 Order.setTotal_cost(total_cost);
+                Order.setO_customer_id(customer);
+                Plant plant = plantRepository.findById(plant_id).orElseThrow(()->new PlantNotFound("Plant not exist"));
+                Order.setO_plant_id(plant);
 
                 return OrderRepository.save(Order);
             } else {
